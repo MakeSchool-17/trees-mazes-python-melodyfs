@@ -1,18 +1,52 @@
 import maze
 import generate_maze
 import sys
+import random
+from collections import deque
 
 
 # Solve maze using Pre-Order DFS algorithm, terminate with solution
 def solve_dfs(m):
-    # TODO: Implement solve_dfs
-    pass
+    backtrack_stack = []
+    # choose a cell index at random from the grid to be current cell
+    current_cell = 0
+    visited_cell = 0
 
+    while current_cell != m.total_cells - 1:
+        unvisited_neighbors = m.cell_neighbors(current_cell)
+        if len(unvisited_neighbors) >= 1:
+            random_index = random.randint(0, len(unvisited_neighbors) - 1)
+            new_cell = unvisited_neighbors[random_index]
+            m.visit_cell(current_cell, new_cell[0], new_cell[1])
+            backtrack_stack.append(current_cell)
+            current_cell = new_cell[0]
+            visited_cell += 1
+        else:
+            m.backtrack(current_cell)
+            current_cell = backtrack_stack.pop()
+        m.refresh_maze_view()
+    m.state = 'idle'
 
 # Solve maze using BFS algorithm, terminate with solution
 def solve_bfs(m):
-    # TODO: Implement solve_bfs
-    pass
+    queue = deque()
+    current_cell = 0
+    direction = 0b0000
+    visited_cells = 0
+    queue.append((current_cell, direction))
+
+    while current_cell != (m.total_cells - 1) and len(queue) != 0:
+        current_cell, direction = queue.popleft()
+        m.bfs_visit_cell(current_cell, direction)
+        visited_cells += 1
+        m.refresh_maze_view()
+
+        neighbors = m.cell_neighbors(current_cell)
+        for neighbor in neighbors:
+            queue.append(neighbor)
+
+    m.reconstruct_solution(current_cell)
+    m.state = 'idle'
 
 
 def print_solution_array(m):

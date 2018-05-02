@@ -3,7 +3,7 @@ import random
 
 # Create maze using Pre-Order DFS maze creation algorithm
 def create_dfs(m):
-    # TODO: Implement create_dfs
+    # Implement create_dfs
     backtrack_stack = []
     # choose a cell index at random from the grid to be current cell
     current_cell = random.randint(0, m.total_cells - 1)
